@@ -1,0 +1,3 @@
+[submodule "vendor/uptime-tracker"]
+	path = vendor/uptime-tracker
+	url = ../uptime-tracker.git

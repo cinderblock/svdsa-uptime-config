@@ -1,0 +1,21 @@
+{
+  "name": "svdsa-uptime-config",
+  "version": "0.1.0",
+  "description": "Uptime monitoring for siliconvalleydsa.org and its redirect domains — a consumer of uptime-tracker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "deploy": "echo 'Deploy by committing to master; GitLab CI deploys.' && exit 1",
+    "migrate": "wrangler d1 migrations apply svdsa-uptime --remote",
+    "dev": "wrangler dev",
+    "guide": "bun guide/build.ts",
+    "guide:pdf": "bun guide/build.ts --pdf"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260117.0",
+    "marked": "^15.0.12",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.59.2"
+  }
+}

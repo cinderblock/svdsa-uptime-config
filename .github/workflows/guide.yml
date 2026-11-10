@@ -1,0 +1,40 @@
+# Publishes SETUP.md as a checklist page and PDF on GitHub Pages.
+# Deploys nothing to Cloudflare; GitLab CI does that (.gitlab-ci.yml).
+name: Guide
+
+on:
+  push:
+    branches: [master]
+    paths: [SETUP.md, guide/**, .github/workflows/guide.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run guide:pdf
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

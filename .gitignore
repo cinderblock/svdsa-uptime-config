@@ -1,0 +1,11 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env.local
+*.log
+
+# Built guide (GitHub Pages builds it from SETUP.md)
+_site/
+
+# Private SECRET_SERVICES input (real origin addresses). Never commit.
+secret-services.local.json

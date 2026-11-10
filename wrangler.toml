@@ -1,0 +1,73 @@
+# Silicon Valley DSA uptime monitor.
+#
+# Unlike the upstream repo, this file IS tracked. The IDs below are
+# deployment-specific, not secret: they do nothing without an API token.
+# Secrets go in the Cloudflare dashboard and never appear here.
+#
+# The account ID is not here either. GitLab CI passes it to wrangler as the
+# CLOUDFLARE_ACCOUNT_ID variable.
+
+name = "svdsa-uptime"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+upload_source_maps = true
+
+# ── Free-plan profile ────────────────────────────────────────────────────────
+# PLAN=free is not "paid with smaller numbers" — it selects a different storage
+# path that fits the free plan's 10 ms CPU ceiling. It runs fine on Workers Paid
+# too. See vendor/uptime-tracker/src/plan.ts.
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+PLAN = "free"
+
+# MUST match [triggers] above — cache TTLs and per-day budgets are derived from
+# it. In particular the DDNS cache TTL: if it lapses, every dashboard request
+# falls back to a 200-row D1 query.
+CRON_INTERVAL_MINUTES = "5"
+
+# Free plan allows 6 simultaneous outgoing connections.
+CHECK_CONCURRENCY = "6"
+
+# Cost monitor off — it polls the GraphQL Analytics API and needs a token.
+CF_ACCOUNT_ID = ""
+
+# Web Push. The PUBLIC key is safe to commit. The private half is the
+# VAPID_PRIVATE_KEY secret. Each device picks its own alerts.
+VAPID_PUBLIC_KEY = ""   # Public Key from setup step 11
+VAPID_SUBJECT = "https://status.siliconvalleydsa.org"
+
+# Anyone may read the status page; DDNS, errors and admin pages need the
+# DASHBOARD_PASSWORD login. Subscribing to push is open to anyone unless the
+# SUBSCRIBE_PASSWORD secret is set.
+PUBLIC_DASHBOARD = "true"
+
+# Per-IP limit for everyone but a logged-in admin. A public page lets anyone make
+# the Worker work, and the free plan's daily limits are shared by the whole
+# account. An open tab polls about twice a minute and a meeting room shares one
+# IP, so 120/min leaves headroom. See the engine README "Traffic and cost".
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 120, period = 60 }
+
+# ── Secrets — set in the dashboard, never here ──────────────────────────────
+# DASHBOARD_PASSWORD  The admin login. With PUBLIC_DASHBOARD on, UNSET means
+#                     there is no admin at all.
+# AUTH_SECRET         Random key signing auth cookies. Required with the above;
+#                     setting only one of the two is a hard error at startup.
+# VAPID_PRIVATE_KEY   Web Push signing key, the private half of VAPID_PUBLIC_KEY.
+# SECRET_SERVICES     Direct checks whose address is never shown (Helena).
+# SUBSCRIBE_PASSWORD  Optional code non-admins must enter to subscribe to push.
+
+[[d1_databases]]
+binding = "DB"
+database_name = "svdsa-uptime"
+database_id = ""        # Database ID from setup step 7
+migrations_dir = "vendor/uptime-tracker/migrations"
+
+[[kv_namespaces]]
+binding = "KV"
+id = ""                 # KV ID from setup step 8

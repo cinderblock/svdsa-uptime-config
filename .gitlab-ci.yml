@@ -1,0 +1,24 @@
+# Deploys the Worker on every push to the default branch.
+#
+# The job only runs once the CLOUDFLARE_API_TOKEN CI/CD variable exists, so the
+# import and early commits don't fail. CLOUDFLARE_ACCOUNT_ID must be set too.
+# See SETUP.md steps 9 and 10.
+
+variables:
+  # vendor/uptime-tracker holds all the source and the D1 migrations. Its URL in
+  # .gitmodules is relative, so it resolves to this group's uptime-tracker.
+  GIT_SUBMODULE_STRATEGY: recursive
+
+deploy:
+  # wrangler needs Node; Bun installs the locked dependencies.
+  image: node:22-bookworm-slim
+  resource_group: cloudflare-deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CLOUDFLARE_API_TOKEN
+  script:
+    - npm install --global bun@1
+    - bun install --frozen-lockfile
+    - bun run typecheck
+    # Apply migrations before deploying, so new code never meets an old schema.
+    - npx wrangler d1 migrations apply svdsa-uptime --remote
+    - npx wrangler deploy
