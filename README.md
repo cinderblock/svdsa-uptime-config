@@ -36,6 +36,7 @@ redirect chain is its own entry, and a break names the hop that broke.
 | --- | --- |
 | `https://siliconvalleydsa.org/` | 200, the canonical site |
 | `http://www.siliconvalleydsa.org/` | 301 → `https://www.siliconvalleydsa.org/` |
+| `https://siliconvalleydsa.org/events/` | 200, the events calendar |
 | `https://svdsa.org/` | 302 → `https://siliconvalleydsa.org/` |
 | `http://www.svdsa.org/` | 302 → `https://siliconvalleydsa.org/` |
 | `https://sv-dsa.org/` | 302 → `https://siliconvalleydsa.org/` |

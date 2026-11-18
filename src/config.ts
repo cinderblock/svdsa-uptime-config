@@ -40,6 +40,14 @@ export const config: DashboardConfig = {
           // never sees. `www: true` would report "down" on the very first tick.
           www: { redirect: 'https://www.siliconvalleydsa.org/' },
         },
+        {
+          // The events calendar, its own entry so a failure names it. Members
+          // reported intermittent 503s here (2026-11-18) while / stayed up.
+          name: 'siliconvalleydsa.org/events (calendar)',
+          host: 'siliconvalleydsa.org',
+          https: '/events/', // measured: 200
+          labels: ['canonical'],
+        },
         // Both redirect domains now land on the canonical site in one hop. Until
         // 2026-10 svdsa.org went via sv-dsa.org; if a chain reappears, list the
         // entries nearest-to-canonical first so each points at the one above.
