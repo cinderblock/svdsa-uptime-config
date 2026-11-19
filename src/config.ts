@@ -30,7 +30,12 @@ export const config: DashboardConfig = {
           // The real site. Everything else eventually points here.
           name: 'siliconvalleydsa.org',
           host: 'siliconvalleydsa.org',
-          https: '/', // measured: 200
+          // The events calendar rides along as a second check: members reported
+          // intermittent 503s there (2026-11-18) while / stayed up. It can't be
+          // its own entry, because the engine keys results by host and two
+          // entries on one host overwrite each other. The first path is the one
+          // the name links to.
+          https: ['/', '/events/'], // measured: 200, 200
           labels: ['canonical'],
 
           // NOT `www: true`. That would assert http://www.host → https://host/,
@@ -39,14 +44,6 @@ export const config: DashboardConfig = {
           // and only redirects www→apex on the https hop, which this check
           // never sees. `www: true` would report "down" on the very first tick.
           www: { redirect: 'https://www.siliconvalleydsa.org/' },
-        },
-        {
-          // The events calendar, its own entry so a failure names it. Members
-          // reported intermittent 503s here (2026-11-18) while / stayed up.
-          name: 'siliconvalleydsa.org/events (calendar)',
-          host: 'siliconvalleydsa.org',
-          https: '/events/', // measured: 200
-          labels: ['canonical'],
         },
         // Both redirect domains now land on the canonical site in one hop. Until
         // 2026-10 svdsa.org went via sv-dsa.org; if a chain reappears, list the
