@@ -17,6 +17,7 @@ import type { DashboardConfig, DdnsClient, LabelDefinition } from '../vendor/upt
 const labels = [
   { id: 'canonical', name: 'Canonical', color: '#e5484d' },
   { id: 'redirect', name: 'Redirect', color: '#8b949e' },
+  { id: 'provider', name: 'Provider', color: '#3e63dd' },
 ] satisfies LabelDefinition[];
 
 export const config: DashboardConfig = {
@@ -60,6 +61,15 @@ export const config: DashboardConfig = {
           https: { url: '/', redirect: 'https://siliconvalleydsa.org/' }, // measured: 302
           www: { redirect: 'https://siliconvalleydsa.org/' }, // measured: 302
           labels: ['redirect'],
+        },
+        {
+          // Helena's host. Its website sits on Tornado's own network beside
+          // Helena, so when Helena goes down this says whose problem it is:
+          // Tornado up means Helena; both down means Tornado or its network.
+          name: 'Tornado VPS (Helena's host)',
+          host: 'tornadovps.com',
+          https: '/', // measured: 200
+          labels: ['provider'],
         },
       ],
     },

@@ -40,6 +40,7 @@ redirect chain is its own entry, and a break names the hop that broke.
 | `https://svdsa.org/` | 302 → `https://siliconvalleydsa.org/` |
 | `http://www.svdsa.org/` | 302 → `https://siliconvalleydsa.org/` |
 | `https://sv-dsa.org/` | 302 → `https://siliconvalleydsa.org/` |
+| `https://tornadovps.com/` | 200, Helena's hosting provider |
 
 The www entry for the canonical site is `www: { redirect: ... }`, not
 `www: true`. The shorthand asserts `http://www.host` → `https://host/`, but this
