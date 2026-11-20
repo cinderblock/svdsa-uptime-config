@@ -178,17 +178,11 @@ Log in through **Admin** on the status page. Then click a 🔔 bell on your phon
 - [ ] Login works
 - [ ] Device listed
 
-### 17. Add the Helena direct check
+### 17. Add the Helena direct checks
 
-This checks Helena at its real address, bypassing Cloudflare's proxy. The page shows only the display name; nobody sees the address, admins included.
+These check Helena at its real address, bypassing Cloudflare's proxy. The page shows only the display names; nobody sees the address, admins included. There are three, so an outage shows what broke: the web server (HTTP), the HTTPS port, or the whole VPS (SSH port).
 
-See what Helena answers on plain HTTP:
-
-```sh
-curl -sI -H "Host: siliconvalleydsa.org" http://HELENA_IP/
-```
-
-Write this, replacing the address and choosing the last field from the table:
+Write this, replacing `HELENA_IP` three times:
 
 ```json
 [
@@ -200,21 +194,31 @@ Write this, replacing the address and choosing the last field from the table:
     "kind": "http",
     "host": "siliconvalleydsa.org",
     "redirect": "https://siliconvalleydsa.org/"
+  },
+  {
+    "id": "helena-https",
+    "name": "Helena (HTTPS port)",
+    "panel": "Silicon Valley DSA",
+    "address": "HELENA_IP",
+    "kind": "tcp",
+    "port": 443
+  },
+  {
+    "id": "helena-ssh",
+    "name": "Helena (SSH port, is the VPS up?)",
+    "panel": "Silicon Valley DSA",
+    "address": "HELENA_IP",
+    "kind": "tcp",
+    "port": 22
   }
 ]
 ```
 
-| `curl` shows | Last field |
-| --- | --- |
-| A 301 or 302 to `https://…` | `"redirect": "https://siliconvalleydsa.org/"` |
-| `HTTP/1.1 200` | `"expect": 200` |
-| No answer | Replace `kind`, `host` and the last field with `"kind": "tcp", "port": 443` |
-
 Add it as the secret `SECRET_SERVICES`, and save a copy in VaultWarden.
 
-> **Limits:** The check can't verify Helena's HTTPS certificate, only that it answers. If Helena's firewall accepts only Cloudflare's IP ranges, the check shows down; use the `tcp` kind or tell Cameron.
+> **Limits:** The checks can't verify Helena's HTTPS certificate, only that it answers. The first one expects plain HTTP to redirect to `https://siliconvalleydsa.org/`, which it did on 2026-11-18; if Helena's setup changes, `curl -sI -H "Host: siliconvalleydsa.org" http://HELENA_IP/` shows what it answers now. If Helena's firewall accepts only Cloudflare's IP ranges, these show down; tell Cameron.
 
-- [ ] Helena shows with a **DIRECT** label
+- [ ] The three Helena checks show with a **DIRECT** label
 
 ## Go live
 
