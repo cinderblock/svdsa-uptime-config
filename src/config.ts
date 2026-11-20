@@ -66,7 +66,7 @@ export const config: DashboardConfig = {
           // Helena's host. Its website sits on Tornado's own network beside
           // Helena, so when Helena goes down this says whose problem it is:
           // Tornado up means Helena; both down means Tornado or its network.
-          name: 'Tornado VPS (Helena's host)',
+          name: "Tornado VPS (Helena's host)",
           host: 'tornadovps.com',
           https: '/', // measured: 200
           labels: ['provider'],
