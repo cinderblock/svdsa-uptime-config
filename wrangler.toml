@@ -36,7 +36,7 @@ CF_ACCOUNT_ID = ""
 
 # Web Push. The PUBLIC key is safe to commit. The private half is the
 # VAPID_PRIVATE_KEY secret. Each device picks its own alerts.
-VAPID_PUBLIC_KEY = ""   # Public Key from setup step 11
+VAPID_PUBLIC_KEY = ""   # Public Key from setup step 9
 VAPID_SUBJECT = "https://status.siliconvalleydsa.org"
 
 # Anyone may read the status page; DDNS, errors and admin pages need the
@@ -65,9 +65,9 @@ simple = { limit = 120, period = 60 }
 [[d1_databases]]
 binding = "DB"
 database_name = "svdsa-uptime"
-database_id = ""        # Database ID from setup step 7
+database_id = ""        # Database ID from setup step 6
 migrations_dir = "vendor/uptime-tracker/migrations"
 
 [[kv_namespaces]]
 binding = "KV"
-id = ""                 # KV ID from setup step 8
+id = ""                 # KV ID from setup step 6

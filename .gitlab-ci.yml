@@ -2,7 +2,7 @@
 #
 # The job only runs once the CLOUDFLARE_API_TOKEN CI/CD variable exists, so the
 # import and early commits don't fail. CLOUDFLARE_ACCOUNT_ID must be set too.
-# See SETUP.md steps 9 and 10.
+# See SETUP.md steps 7 and 8.
 
 variables:
   # vendor/uptime-tracker holds all the source and the D1 migrations. Its URL in

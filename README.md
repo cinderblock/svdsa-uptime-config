@@ -49,7 +49,7 @@ https hop, which the check never sees.
 
 Direct checks that bypass Cloudflare's proxy, such as Helena's, go in the
 `SECRET_SERVICES` Worker secret instead, so the address never appears here or on
-the page. See SETUP.md step 17.
+the page. See SETUP.md step 13.
 
 ## Deploying
 

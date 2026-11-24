@@ -5,6 +5,9 @@
  *               reader's browser (localStorage, nothing is sent anywhere)
  *   setup.pdf   the same page printed, with `--pdf` (needs Chrome or Chromium)
  *
+ * ```mermaid blocks become diagrams, drawn in the browser by Mermaid (the
+ * same blocks GitLab and GitHub draw in SETUP.md itself).
+ *
  * Each step's checklist becomes a "Done when" box, so the checks are easy to
  * find on screen, in the PDF and on paper. GitHub Pages runs this on every push
  * (.github/workflows/guide.yml).
@@ -50,6 +53,12 @@ html = html.replace(
   },
 );
 
+// Mermaid reads the block's text, so hand it the diagram source as-is.
+html = html.replace(
+  /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
+  (_, src: string) => `<figure class="diagram"><pre class="mermaid">${src}</pre></figure>`,
+);
+
 const page = `<!doctype html>
 <html lang="en">
 <head>
@@ -88,6 +97,8 @@ table { border-collapse: collapse; width: 100%; margin: 0.8rem 0; font-size: 0.9
 th, td { border: 1px solid var(--line); padding: 6px 10px; text-align: left; vertical-align: top; }
 th { background: var(--code-bg); }
 .table-wrap { overflow-x: auto; }
+.diagram { margin: 1rem 0; padding: 12px; overflow-x: auto; background: #fff; border-radius: 6px; }
+.diagram pre.mermaid { background: none; padding: 0; text-align: center; }
 blockquote { margin: 1rem 0; padding: 0.2rem 1rem; border-left: 3px solid var(--line); color: var(--muted); }
 
 .checks {
@@ -123,8 +134,8 @@ blockquote { margin: 1rem 0; padding: 0.2rem 1rem; border-left: 3px solid var(--
   .bar { display: none; }
   body { font-size: 11pt; }
   main { max-width: none; padding: 0; }
-  h3 { break-after: avoid; }
-  .checks, pre, table { break-inside: avoid; }
+  h2, h3 { break-after: avoid; }
+  .checks, pre, table, .diagram { break-inside: avoid; }
   .checks { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .checks input { appearance: none; border: 1.5px solid #444; border-radius: 3px; }
   a { color: inherit; }
@@ -165,6 +176,11 @@ ${html.replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>
   update();
 })();
 </script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: false, theme: 'neutral', flowchart: { htmlLabels: true } });
+await mermaid.run();
+</script>
 </body>
 </html>
 `;
@@ -194,6 +210,8 @@ if (process.argv.includes('--pdf')) {
     '--disable-gpu',
     '--no-first-run',
     '--no-pdf-header-footer',
+    // Let the diagrams load and draw before printing.
+    '--virtual-time-budget=20000',
     `--print-to-pdf=${pdf}`,
     pathToFileURL(join(out, 'index.html')).href,
   ]);
