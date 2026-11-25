@@ -28,18 +28,21 @@ Past check results aren't copied; the new monitor starts empty. Cameron's copy k
 
 ```mermaid
 flowchart TB
+  people["<b>Anyone</b>"]
   subgraph gl["GitLab group svdsa"]
+    direction LR
     eng["<b>uptime-tracker</b><br>monitor code"] -- "submodule" --> cfg["<b>uptime-config</b><br>sites to check, settings"]
   end
   subgraph cf["Official Cloudflare account"]
+    direction LR
     sec["<b>Worker secrets</b><br>login, push key, Helena IP"] --> w["<b>Worker svdsa-uptime</b>"]
-    db[("<b>D1 database</b><br><b>KV store</b>")] <--> w
+    w <--> db[("<b>D1 database</b><br><b>KV store</b>")]
   end
-  cfg -- "commit to master:<br>GitLab CI deploys" --> w
-  people["<b>Anyone</b>"] -- "status.siliconvalleydsa.org" --> w
-  w -- "every 5 min" --> sites["<b>Chapter websites</b>"]
-  w -- "direct, by IP" --> helena["<b>Helena server</b>"]
-  w -- "alerts" --> phones["<b>Admins' phones</b>"]
+  gl -- "commit to master:<br>GitLab CI deploys" --> cf
+  people -- "status.siliconvalleydsa.org" --> cf
+  cf -- "every 5 min" --> sites["<b>Chapter websites</b>"]
+  cf -- "direct, by IP" --> helena["<b>Helena server</b>"]
+  cf -- "alerts" --> phones["<b>Admins' phones</b>"]
 ```
 
 Both repos are public: they hold only domain names, Cloudflare IDs, and the public push key. Passwords, private keys, and Helena's IP go in Worker secrets and VaultWarden.
